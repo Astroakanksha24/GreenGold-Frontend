@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:green_building/surveyor/home.dart';
@@ -9,6 +5,9 @@ import 'package:green_building/surveyor/profile.dart';
 import 'package:green_building/surveyor/reports.dart';
 import 'package:green_building/surveyor/survey.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 final storage = new FlutterSecureStorage();
 
@@ -56,9 +55,12 @@ class _SurveyorDashboardState extends State<SurveyorDashboard> {
   }
 
   @override
+  late PageController _pageController = PageController();
   void initState() {
     super.initState();
     // getStorageValues();
+    super.initState();
+    _pageController = PageController();
     getUserData(username, token);
   }
 
@@ -110,7 +112,7 @@ class _SurveyorDashboardState extends State<SurveyorDashboard> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.archive_outlined),
-            label: 'Records',
+            label: 'Reports',
             backgroundColor: Color(0xFF13552C),
           ),
           BottomNavigationBarItem(
