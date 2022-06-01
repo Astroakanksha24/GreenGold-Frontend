@@ -1,55 +1,58 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 final storage = new FlutterSecureStorage();
 
-class home extends StatefulWidget {
-  const home({Key? key}) : super(key: key);
+class NearbyNGOs extends StatefulWidget {
+  Map<String, dynamic> entityData = {};
+
   @override
-  State<home> createState() => _homeState();
+  _NearbyNGOsState createState() => _NearbyNGOsState();
 }
 
-class _homeState extends State<home> {
-  String? token = '', username = '', role = '';
+class _NearbyNGOsState extends State<NearbyNGOs> {
+  Map<String, dynamic> entityData = {};
+  double latitude = 0.0, longitude = 0.0;
+  String? token = '', username = '', type = '';
 
-  List<ProjectInstance> theProjects = [];
+  List<NGOInstance> theNGOs = [];
 
   void getUserData() async {
     token = await storage.read(key: 'token');
     username = await storage.read(key: 'username');
-    role = await storage.read(key: 'role');
+    type = await storage.read(key: 'type');
 
     try {
       String theURL =
-          'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/projects/admin/$username';
+          'https://asia-south1-sahayya-9c930.cloudfunctions.net/api/get-ngos/$username';
       final response = await http.get(Uri.parse(theURL),
           headers: {HttpHeaders.authorizationHeader: token!});
 
-      if (response.statusCode == 201) {
-        log("success");
+      if (response.statusCode == 200) {
         var resp = jsonDecode(response.body);
-        log(resp.toString());
-        List<dynamic> theArray = resp;
-        List<Map<dynamic, dynamic>> allProjects = [];
+        List<dynamic> theArray = resp['data'];
+        List<Map<dynamic, dynamic>> allNGOs = [];
         setState(() {
-          //entityData = resp;
+          entityData = resp;
           for (var i = 0; i < theArray.length; i++) {
             Map<dynamic, dynamic> thread2 =
                 Map<dynamic, dynamic>.from(theArray[i]);
-            allProjects.add(thread2);
-            theProjects.add(ProjectInstance(data: thread2));
+            allNGOs.add(thread2);
+            theNGOs.add(NGOInstance(data: thread2));
           }
         });
         return;
       }
       await storage.write(key: 'username', value: null);
       await storage.write(key: 'token', value: null);
-      await storage.write(key: 'role', value: null);
+      await storage.write(key: 'type', value: null);
       Navigator.pushReplacementNamed(context, '/start');
       return;
     } catch (e) {
@@ -67,8 +70,8 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Color(0xFF3E5A81),
       height: double.infinity,
-      color: Color(0xFFE0FCFB),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -80,9 +83,9 @@ class _homeState extends State<home> {
                   child: RichText(
                     text: TextSpan(children: [
                       TextSpan(
-                        text: 'Projects',
+                        text: 'NGO around me',
                         style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
                         ),
@@ -93,7 +96,7 @@ class _homeState extends State<home> {
               ],
             ),
             Column(
-              children: theProjects,
+              children: theNGOs,
             )
           ],
         ),
@@ -102,25 +105,64 @@ class _homeState extends State<home> {
   }
 }
 
-class ProjectInstance extends StatefulWidget {
+class NGOInstance extends StatefulWidget {
   var data = {};
-  ProjectInstance({required this.data});
-  //const ProjectInstance({Key? key}) : super(key: key);
+  NGOInstance({required this.data});
 
   @override
-  State<ProjectInstance> createState() => _ProjectInstanceState();
+  _NGOInstanceState createState() => _NGOInstanceState();
 }
 
-class _ProjectInstanceState extends State<ProjectInstance> {
+class _NGOInstanceState extends State<NGOInstance> {
+  File? _image;
+
+  Future<File> urlToFile(String imageUrl) async {
+    var rng = new Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = new File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
+  }
+
+  void setImage() async {
+    print(widget.data['picture']);
+    File tempo = await urlToFile(widget.data['picture']);
+    setState(() {
+      _image = tempo;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setImage();
+  }
+
+  String listToString(List<dynamic> lst) {
+    String val = '';
+    for (var i = 0; i < lst.length; i++) {
+      val += lst[i];
+      if (i != lst.length - 1) {
+        val += ', ';
+      }
+    }
+    return val;
+  }
+
   @override
   Widget build(BuildContext context) {
     var data = widget.data;
+
+    print(data['sectors'].length);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.all(Radius.circular(30)),
         border: Border.all(
-          color: Color(0xFF13552C),
+          color: Colors.white,
           width: 2,
         ),
       ),
@@ -131,14 +173,34 @@ class _ProjectInstanceState extends State<ProjectInstance> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              CircleAvatar(
+                radius: 65,
+                child: ClipOval(
+                  child: (_image != null)
+                      ? Image.file(
+                          _image!,
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Building Name',
+                      text: '${data['name']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 30,
                           fontWeight: FontWeight.w700),
                     )
@@ -158,9 +220,9 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Building Name: ${data['building_name']}',
+                      text: '${data['description']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.w500),
                     )
@@ -180,9 +242,9 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'City: ${data['city']}',
+                      text: '${listToString(data['sectors'])}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.w500),
                     )
@@ -202,9 +264,9 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'State: ${data['state']}',
+                      text: '${data['username']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.italic),
@@ -225,9 +287,9 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Surveyor: ${data['surveyor_id']}',
+                      text: '${data['email']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.italic),
@@ -244,30 +306,48 @@ class _ProjectInstanceState extends State<ProjectInstance> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Color(0xFF13552C)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                  color: Color(0xFF13552C), width: 2.0)))),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                    child: Text('Start survey',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
-                  ),
-                  onPressed: null,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: '${data['address']}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          fontStyle: FontStyle.italic),
+                    )
+                  ]),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: '${data['city']},${data['state']}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          fontStyle: FontStyle.italic),
+                    )
+                  ]),
                 ),
               ),
             ],
           ),
           SizedBox(
             height: 20,
-          )
+          ),
         ],
       ),
     );
