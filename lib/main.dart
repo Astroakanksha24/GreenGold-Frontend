@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:green_building/admin/CreateSurveyor.dart';
 import 'package:green_building/admin/adminDashboard.dart';
+import 'package:green_building/surveyor/surveyorDashboard.dart';
 import 'package:green_building/utils/login.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       routes: {
         '/adminDashboard': (context) => const AdminDashboard(),
+        '/surveyorDashboard': (context) => const SurveyorDashboard(),
         'createSurveyor': (context) => const CreateSurveyor(),
         '/login': (context) => const LoginScreen(),
       },
