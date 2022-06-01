@@ -83,6 +83,46 @@ class _profileState extends State<profile> {
             SizedBox(
               height: 20,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(
+                                        color: Color(0xFFFFFFFF),
+                                        width: 2.0)))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 15),
+                      child: RichText(
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text: 'Logout',
+                            style: TextStyle(
+                                color: Color(0xFF3E5A81), fontSize: 20),
+                          )
+                        ]),
+                      ),
+                    ),
+                    onPressed: () async {
+                      await storage.write(key: 'username', value: null);
+                      await storage.write(key: 'token', value: null);
+                      await storage.write(key: 'type', value: null);
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
