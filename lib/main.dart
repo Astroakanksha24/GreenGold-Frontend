@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:green_building/utils/login.dart';
-import 'package:green_building/utils/startscreen.dart';
-import 'package:green_building/admin/profile.dart';
-import 'package:green_building/admin/adminDashboard.dart';
 import 'package:green_building/admin/CreateSurveyor.dart';
+import 'package:green_building/admin/adminDashboard.dart';
+import 'package:green_building/utils/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,10 +19,11 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xff13552C),
       ),
       //initialRoute: '/createSurveyor',
-      home: AdminDashboard(),
+      home: LoginScreen(),
       routes: {
         '/adminDashboard': (context) => const AdminDashboard(),
         'createSurveyor': (context) => const CreateSurveyor(),
+        '/login': (context) => const LoginScreen(),
       },
       debugShowCheckedModeBanner: false,
     );

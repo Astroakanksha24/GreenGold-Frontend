@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 final storage = new FlutterSecureStorage();
 
@@ -16,25 +18,23 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  String? token = '', username = '', type = '';
+  String? token = '', username = '', role = '';
   bool _passwordVisible = false;
 
   void getStorageValues() async {
     token = await storage.read(key: 'token');
     username = await storage.read(key: 'username');
-    type = await storage.read(key: 'type');
+    role = await storage.read(key: 'role');
 
-    // if (username != null) {
-    //   if (username!.length > 0) {
-    //     if (type == 'NGO') {
-    //       Navigator.pushReplacementNamed(context, '/ngoDashboard');
-    //     } else if (type == 'Donor') {
-    //       Navigator.pushReplacementNamed(context, '/indvDonor');
-    //     } else if (type == 'Company') {
-    //       Navigator.pushReplacementNamed(context, '/compDonor');
-    //     }
-    //   }
-    // }
+    if (username != null) {
+      if (username!.length > 0) {
+        if (role == 'admin') {
+          Navigator.pushReplacementNamed(context, '/adminDashboard');
+        } else if (role == 'surveyor') {
+          Navigator.pushReplacementNamed(context, '/surveyorDashboard');
+        }
+      }
+    }
   }
 
   @override
@@ -153,14 +153,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     final response = await http.post(
                         Uri.parse(
-                            'https://asia-south1-sahayya-9c930.cloudfunctions.net/api/login'),
+                            'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/admin-login'),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
                         },
                         body: json.encode(theData));
 
-                    print(response.body);
-                    print(response.statusCode);
+                    log(response.body);
+                    log(response.statusCode.toString());
 
                     if (response.statusCode == 401) {
                       final snackBar = SnackBar(
@@ -178,26 +178,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       return;
                     }
 
-                    if (response.statusCode == 200) {
+                    if (response.statusCode == 201) {
                       final snackBar = SnackBar(
                         content: Text('Successfully Logged in.'),
                       );
+                      log("suceess");
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                       Map<String, dynamic> resp = json.decode(response.body);
 
                       await storage.write(key: 'username', value: username);
                       await storage.write(key: 'token', value: resp['token']);
-                      await storage.write(
-                          key: 'type', value: resp['data']['type']);
-
-                      if (resp['data']['type'] == 'NGO') {
+                      await storage.write(key: 'role', value: resp['role']);
+                      log(resp["role"]);
+                      if (resp['role'] == 'admin') {
+                        log("in admin");
                         Navigator.pushReplacementNamed(
-                            context, '/ngoDashboard');
-                      } else if (resp['data']['type'] == 'Company') {
-                        Navigator.pushReplacementNamed(context, '/compDonor');
-                      } else if (resp['data']['type'] == 'Donor') {
-                        Navigator.pushReplacementNamed(context, '/indvDonor');
+                            context, '/adminDashboard');
+                      } else if (resp['role'] == 'surveyor') {
+                        Navigator.pushReplacementNamed(
+                            context, '/surveyorDashboard');
                       }
                       return;
                     }

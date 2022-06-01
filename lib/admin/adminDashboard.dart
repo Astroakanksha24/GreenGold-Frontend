@@ -1,13 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:green_building/admin/home.dart';
-import 'package:green_building/admin/survey.dart';
-import 'package:green_building/admin/report.dart';
 import 'package:green_building/admin/profile.dart';
+import 'package:green_building/admin/report.dart';
+import 'package:green_building/admin/survey.dart';
+import 'package:http/http.dart' as http;
 
 final storage = new FlutterSecureStorage();
 
@@ -20,27 +21,27 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   Map<String, dynamic> entityData = {};
-  String? token = '', username = '', type = '';
+  String? token = '', username = '', role = '';
 
   void getStorageValues() async {
     token = await storage.read(key: 'token');
     username = await storage.read(key: 'username');
-    type = await storage.read(key: 'type');
+    role = await storage.read(key: 'role');
   }
 
   void getUserData(username, token) async {
     token = await storage.read(key: 'token');
     username = await storage.read(key: 'username');
-    type = await storage.read(key: 'type');
+    role = await storage.read(key: 'role');
 
     String theURL =
-        'https://asia-south1-sahayya-9c930.cloudfunctions.net/api/profile/' +
+        'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/user/' +
             username;
     final response = await http.get(Uri.parse(theURL),
         headers: {HttpHeaders.authorizationHeader: token});
 
-    if (response.statusCode == 200) {
-      print(response.statusCode);
+    if (response.statusCode == 201) {
+      log(response.statusCode.toString());
       Map<String, dynamic> resp = jsonDecode(response.body);
       setState(() {
         entityData = resp;
@@ -49,7 +50,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     }
     await storage.write(key: 'username', value: null);
     await storage.write(key: 'token', value: null);
-    await storage.write(key: 'type', value: null);
+    await storage.write(key: 'role', value: null);
     Navigator.pushReplacementNamed(context, '/start');
     return;
   }
