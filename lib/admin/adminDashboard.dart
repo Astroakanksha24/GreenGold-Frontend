@@ -9,6 +9,7 @@ import 'package:green_building/admin/profile.dart';
 import 'package:green_building/admin/report.dart';
 import 'package:green_building/admin/survey.dart';
 import 'package:http/http.dart' as http;
+import 'package:green_building/admin/CreateProject.dart';
 
 final storage = new FlutterSecureStorage();
 
@@ -56,9 +57,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   @override
+  late PageController _pageController = PageController();
   void initState() {
     super.initState();
     // getStorageValues();
+    super.initState();
+    _pageController = PageController();
     getUserData(username, token);
   }
 
@@ -86,6 +90,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
             letterSpacing: 1,
           ),
         ),
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new CreateProject())),
+                child: Icon(
+                  Icons.add_box_outlined,
+                  size: 26.0,
+                ),
+              )),
+        ],
       ),
       body: Center(
         child: <Widget>[
@@ -110,7 +126,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.archive_outlined),
-            label: 'Records',
+            label: 'Reports',
             backgroundColor: Color(0xFF13552C),
           ),
           BottomNavigationBarItem(
