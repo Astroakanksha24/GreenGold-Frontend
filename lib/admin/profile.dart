@@ -44,7 +44,7 @@ class _profileState extends State<profile> {
     await storage.write(key: 'username', value: null);
     await storage.write(key: 'token', value: null);
     await storage.write(key: 'role', value: null);
-    Navigator.pushReplacementNamed(context, '/start');
+    Navigator.pushReplacementNamed(context, '/login');
     return;
   }
 

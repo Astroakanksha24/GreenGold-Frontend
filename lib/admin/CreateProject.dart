@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,112 +13,33 @@ class CreateProject extends StatefulWidget {
 }
 
 class _CreateProjectState extends State<CreateProject> {
-  final _formKey = GlobalKey<FormState>();
-  String? _chosenValueRole;
-  bool _passwordVisible = false;
-
-  String username = '',
-      password = '',
-      cpassword = '',
-      email = '',
-      name = '',
+  String building_name = '',
+      address = '',
       city = '',
       state = '',
-      address = '',
-      description = '',
-      fName = '',
-      lName = '',
-      location = '',
-      bio = '',
-      contactNo = '',
-      imageURL =
-          'https://firebasestorage.googleapis.com/v0/b/bizrep-b0184.appspot.com/o/profile_picture.png?alt=media&token=f23c3431-328e-47d6-8e0c-a1dfabbf13bf';
+      surveyor_id = '';
 
-  double latitude = 0.0, longitude = 0.0;
+  String? role = '', token = '', username = '';
 
-  String type = '';
-
-  List<String> selectedSectors = [];
-
-  List<String> allTheSectors = [];
-
-  String? _chosenSector;
-
-  //File _image = File('images/giftbox.png');
-  File? _image;
-  late String url;
-
-  String profilePic =
-      'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png';
-
-  // Future<File> urlToFile(String imageUrl) async {
-  //   var rng = new Random();
-  //   Directory tempDir = await getTemporaryDirectory();
-  //   String tempPath = tempDir.path;
-  //   File file = new File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
-  //   http.Response response = await http.get(Uri.parse(imageUrl));
-  //   await file.writeAsBytes(response.bodyBytes);
-  //   return file;
-  // }
-
-  // void setImage() async {
-  //   File tempo = await urlToFile(profilePic);
-  //   setState(() {
-  //     _image = tempo;
-  //   });
-  // }
+  void getUserData() async {
+    token = await storage.read(key: 'token');
+    print("token");
+    print(token);
+    username = await storage.read(key: 'username');
+    role = await storage.read(key: 'role');
+    return;
+  }
 
   @override
-  // void initState() {
-  //   super.initState();
-  //   setImage();
-  //   getCurrentLocation();
-  // }
+  void initState() {
+    super.initState();
+    getUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> uploadPic(BuildContext context) async {
-      if (_image == null) {
-        setState(() {
-          imageURL = "";
-        });
-      } else {
-        var postUri = Uri.parse(
-            "https://asia-south1-sahayya-9c930.cloudfunctions.net/api/upload-file");
-        var request = new http.MultipartRequest("POST", postUri);
-        request.files
-            .add(await http.MultipartFile.fromPath('file', _image!.path));
-        request.send().then((result) async {
-          http.Response.fromStream(result).then((response) async {
-            var body = json.decode(response.body);
-            print(body['link']);
-            setState(() {
-              imageURL = body['link'];
-            });
-          });
-        });
-        setState(() {
-          imageURL = "";
-        });
-      }
-    }
-
-    int myTrigger = 3;
-
-    void deleteSectorInstance(String value) {
-      print(value);
-      setState(() {
-        allTheSectors.add(value);
-        selectedSectors.remove(value);
-        myTrigger = 25;
-      });
-      print(allTheSectors);
-      print(selectedSectors);
-      print("Hey Angel");
-    }
-
     return Scaffold(
-      backgroundColor: Color(0xFF3E5A81),
+      backgroundColor: Color(0x13552C),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
         child: SingleChildScrollView(
@@ -175,7 +94,7 @@ class _CreateProjectState extends State<CreateProject> {
                       textInputAction: TextInputAction.next,
                       onChanged: (val) {
                         setState(() {
-                          username = val;
+                          building_name = val;
                         });
                       },
                     ),
@@ -205,34 +124,10 @@ class _CreateProjectState extends State<CreateProject> {
                       textInputAction: TextInputAction.next,
                       onChanged: (val) {
                         setState(() {
-                          username = val;
+                          address = val;
                         });
                       },
                     ),
-                  ),
-                  TextField(
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.white,
-                    ),
-                    enabled: true,
-                    decoration: InputDecoration(
-                      hintText: 'Username',
-                      filled: true,
-                      fillColor: Color(0xFF3E5A81),
-                      hintStyle: TextStyle(
-                        color: Colors.white,
-                      ),
-                      border: border(context),
-                      enabledBorder: border(context),
-                      focusedBorder: focusBorder(context),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    onChanged: (val) {
-                      setState(() {
-                        username = val;
-                      });
-                    },
                   ),
                   SizedBox(
                     height: 5.0,
@@ -256,6 +151,12 @@ class _CreateProjectState extends State<CreateProject> {
                           hintText: ' City',
                           hintStyle: TextStyle(color: Color(0xFF13552C))),
                       //controller: _usernameController,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (val) {
+                        setState(() {
+                          city = val;
+                        });
+                      },
                     ),
                   ),
                   SizedBox(
@@ -280,6 +181,12 @@ class _CreateProjectState extends State<CreateProject> {
                           hintText: ' State',
                           hintStyle: TextStyle(color: Color(0xFF13552C))),
                       //controller: _usernameController,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (val) {
+                        setState(() {
+                          state = val;
+                        });
+                      },
                     ),
                   ),
                   SizedBox(
@@ -304,6 +211,12 @@ class _CreateProjectState extends State<CreateProject> {
                           hintText: ' Username of Surveyor ',
                           hintStyle: TextStyle(color: Color(0xFF13552C))),
                       //controller: _usernameController,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (val) {
+                        setState(() {
+                          surveyor_id = val;
+                        });
+                      },
                     ),
                   ),
                   SizedBox(
@@ -337,20 +250,11 @@ class _CreateProjectState extends State<CreateProject> {
                           ),
                           onPressed: () async {
                             Map<String, dynamic> theData = {
-                              "username": username,
-                              "email": email,
-                              "password": password,
-                              "coOrdinates": {
-                                "latitude": latitude,
-                                "longitude": longitude
-                              },
-                              "picture": imageURL,
-                              "name": name,
+                              "building_name": building_name,
+                              "address": address,
                               "city": city,
                               "state": state,
-                              "address": address,
-                              "sectors": selectedSectors,
-                              "description": description,
+                              "surveyor_id": surveyor_id
                             };
                             print(theData);
 
@@ -359,21 +263,34 @@ class _CreateProjectState extends State<CreateProject> {
 
                             print(object);
 
+                            print(token);
+
                             final response = await http.post(
                                 Uri.parse(
-                                    'https://asia-south1-sahayya-9c930.cloudfunctions.net/api/ngo-signup'),
+                                    'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/create-project'),
                                 headers: <String, String>{
                                   'Content-Type':
                                       'application/json; charset=UTF-8',
+                                  'authorization': '$token'
                                 },
                                 body: json.encode(theData));
 
                             print(response.statusCode);
                             print(response.body);
 
-                            if (response.statusCode == 403) {
+                            if (response.statusCode == 401) {
                               final snackBar = SnackBar(
-                                content: Text('Username already exists. '),
+                                content: Text('Invalid token '),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              return;
+                            }
+
+                            if (response.statusCode == 402) {
+                              final snackBar = SnackBar(
+                                content:
+                                    Text('Login through admin credentials. '),
                               );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
@@ -382,22 +299,13 @@ class _CreateProjectState extends State<CreateProject> {
 
                             if (response.statusCode == 201) {
                               final snackBar = SnackBar(
-                                content: Text('NGO signed up successfully. '),
+                                content: Text('Project created successfully. '),
                               );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
-
-                              Map<String, dynamic> resp =
-                                  json.decode(response.body);
-
-                              await storage.write(
-                                  key: 'username', value: username);
-                              await storage.write(
-                                  key: 'token', value: resp['token']);
-                              await storage.write(key: 'type', value: type);
                               //route to ngoDashboard
                               Navigator.pushReplacementNamed(
-                                  context, '/ngoDashboard');
+                                  context, '/adminDashboard');
                               return;
                             }
                             ;
