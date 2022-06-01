@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:green_building/admin/textNonEdit.dart';
 import 'package:http/http.dart' as http;
+import 'package:green_building/admin/CreateSurveyor.dart';
 
 final storage = new FlutterSecureStorage();
 
@@ -106,7 +107,10 @@ class _profileState extends State<profile> {
                       child: Text('Create Surveyor',
                           style: TextStyle(color: Colors.white, fontSize: 20)),
                     ),
-                    onPressed: null,
+                    onPressed: () async {
+                      Navigator.pushReplacementNamed(
+                          context, '/CreateSurveyor');
+                    },
                   ),
                 ),
               ],
