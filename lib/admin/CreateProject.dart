@@ -39,7 +39,7 @@ class _CreateProjectState extends State<CreateProject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0x13552C),
+      backgroundColor: Color(0xFFE0FCFB),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
         child: SingleChildScrollView(
