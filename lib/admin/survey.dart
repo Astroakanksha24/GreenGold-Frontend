@@ -55,6 +55,18 @@ class _surveyState extends State<survey> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 38),
+              child: Center(
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.red,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: _questionIndex < _questions.length
@@ -65,6 +77,45 @@ class _surveyState extends State<survey> {
                     ) //Quiz
                   : Result(_totalScore, _resetQuiz),
             ),
+            SizedBox(
+              height: 40.0,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 20.0,
+                ),
+                ElevatedButton(
+                  onPressed: null,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Color(0xFF13552C)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                  color: Color(0xFF13552C), width: 2.0)))),
+                  child: Text('< Prev',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+                SizedBox(
+                  width: 160.0,
+                ),
+                ElevatedButton(
+                  onPressed: null,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Color(0xFF13552C)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                  color: Color(0xFF13552C), width: 2.0)))),
+                  child: Text('Next >',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+              ],
+            )
           ],
         ),
       ),
