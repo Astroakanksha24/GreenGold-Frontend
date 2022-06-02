@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:green_building/admin/CreateSurveyor.dart';
 import 'package:green_building/admin/adminDashboard.dart';
-import 'package:green_building/admin/home.dart';
-import 'package:green_building/surveyor/home.dart';
 import 'package:green_building/surveyor/surveyorDashboard.dart';
 import 'package:green_building/utils/login.dart';
 
@@ -26,7 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/adminDashboard': (context) => const AdminDashboard(),
         '/surveyorDashboard': (context) => const SurveyorDashboard(),
-        'createSurveyor': (context) => const CreateSurveyor(),
+        '/CreateSurveyor': (context) => const CreateSurveyor(),
         '/login': (context) => const LoginScreen(),
       },
       debugShowCheckedModeBanner: false,

@@ -18,6 +18,11 @@ class _CreateSurveyorState extends State<CreateSurveyor> {
       surveyor_id = '';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
