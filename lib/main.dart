@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/adminDashboard': (context) => const AdminDashboard(),
         '/surveyorDashboard': (context) => const SurveyorDashboard(),
-        'createSurveyor': (context) => const CreateSurveyor(),
+        '/CreateSurveyor': (context) => const CreateSurveyor(),
         '/login': (context) => const LoginScreen(),
       },
       debugShowCheckedModeBanner: false,
