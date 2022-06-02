@@ -1,15 +1,20 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:green_building/admin/home.dart';
+import 'package:green_building/admin/progressBar.dart';
 import 'package:green_building/admin/quiz.dart';
 import 'package:green_building/admin/result.dart';
 import 'package:http/http.dart' as http;
 
 final storage = new FlutterSecureStorage();
+
+int currentscore = 0;
+int getCurrentScore() {
+  return currentscore;
+}
 
 class survey extends StatefulWidget {
   const survey({Key? key}) : super(key: key);
@@ -218,9 +223,10 @@ class _surveyState extends State<survey> {
 
     if (response.statusCode == 201) {
       var resp = jsonDecode(response.body);
-      _totalScore = resp["score"];
+      currentscore = resp["score"];
       setState(() {
         _questionIndex = _questionIndex + 1;
+        _totalScore = resp["score"];
       });
       print(_questionIndex);
       if (_questionIndex < _questions.length) {
@@ -251,15 +257,12 @@ class _surveyState extends State<survey> {
           child: Column(
         children: [
           SizedBox(
-            height: 20.0,
+            height: 70.0,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 38),
             child: Center(
-              child: LinearProgressIndicator(
-                backgroundColor: Colors.red,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              ),
+              child: ProgressBar(),
             ),
           ),
           Padding(
@@ -302,9 +305,13 @@ class _surveyState extends State<survey> {
             ),
             ElevatedButton(
               onPressed: () {
-                setState(() {
-                  _questionIndex++;
-                });
+                if (_questionIndex < _questions.length) {
+                  setState(() {
+                    _questionIndex++;
+                  });
+                } else {
+                  Navigator.pushReplacementNamed(context, '/result');
+                }
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Color(0xFF13552C)),

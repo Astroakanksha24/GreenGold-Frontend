@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:green_building/admin/home.dart';
@@ -65,19 +66,43 @@ class _ResultState extends State<Result> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          SizedBox(
+            height: 30.0,
+          ),
           Text(
             '${projectData["certification_badge"]} certified',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 26,
+                color: Color(0xFF13552C),
+                fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 20.0,
           ), //Text
           Text(
             'Score ${projectData["score"]}/100',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 26,
+                color: Color(0xFF13552C),
+                fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
+          SizedBox(
+            height: 60,
+          ),
           ElevatedButton(
-            onPressed: null,
-            child: Text('Restart Quiz',
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Color(0xFF13552C)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side:
+                            BorderSide(color: Color(0xFF13552C), width: 2.0)))),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/reports');
+            },
+            child: Text('Generate Report',
                 style: TextStyle(color: Colors.white, fontSize: 20)),
           ) //Text//FlatButton
         ], //<Widget>[]

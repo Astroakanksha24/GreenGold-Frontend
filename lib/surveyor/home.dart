@@ -26,7 +26,7 @@ class _homeState extends State<home> {
 
     try {
       String theURL =
-          'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/projects/admin/$username';
+          'https://asia-south1-greengold-34fc0.cloudfunctions.net/api/projects/surveyor/$username';
       final response = await http.get(Uri.parse(theURL),
           headers: {HttpHeaders.authorizationHeader: token!});
 
@@ -111,6 +111,11 @@ class ProjectInstance extends StatefulWidget {
   State<ProjectInstance> createState() => _ProjectInstanceState();
 }
 
+String selectedProject = 'hello';
+String getSelectedProject() {
+  return selectedProject;
+}
+
 class _ProjectInstanceState extends State<ProjectInstance> {
   @override
   Widget build(BuildContext context) {
@@ -132,15 +137,15 @@ class _ProjectInstanceState extends State<ProjectInstance> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
                       text: 'Building Name',
                       style: TextStyle(
                           color: Color(0xFF13552C),
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
                     )
                   ]),
                 ),
@@ -158,7 +163,29 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Building Name: ${data['building_name']}',
+                      text: '${data['building_name']}',
+                      style: TextStyle(
+                          color: Color(0xFF13552C),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
+                    )
+                  ]),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Address: ${data['address']}',
                       style: TextStyle(
                           color: Color(0xFF13552C),
                           fontSize: 20,
@@ -204,10 +231,10 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                     TextSpan(
                       text: 'State: ${data['state']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.italic),
+                        color: Color(0xFF13552C),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
                     )
                   ]),
                 ),
@@ -227,10 +254,10 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                     TextSpan(
                       text: 'Surveyor: ${data['surveyor_id']}',
                       style: TextStyle(
-                          color: Color(0xFF13552C),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.italic),
+                        color: Color(0xFF13552C),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
                     )
                   ]),
                 ),
@@ -260,7 +287,13 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                     child: Text('Start survey',
                         style: TextStyle(color: Colors.white, fontSize: 20)),
                   ),
-                  onPressed: null,
+                  onPressed: () {
+                    setState(() {
+                      selectedProject = '${data["_id"]}';
+                    });
+                    log(selectedProject.toString());
+                    Navigator.pushReplacementNamed(context, '/survey');
+                  },
                 ),
               ),
             ],
