@@ -111,6 +111,11 @@ class ProjectInstance extends StatefulWidget {
   State<ProjectInstance> createState() => _ProjectInstanceState();
 }
 
+String selectedProject = 'hello';
+String getSelectedProject() {
+  return selectedProject;
+}
+
 class _ProjectInstanceState extends State<ProjectInstance> {
   @override
   Widget build(BuildContext context) {
@@ -282,7 +287,13 @@ class _ProjectInstanceState extends State<ProjectInstance> {
                     child: Text('Start survey',
                         style: TextStyle(color: Colors.white, fontSize: 20)),
                   ),
-                  onPressed: null,
+                  onPressed: () {
+                    setState(() {
+                      selectedProject = '${data["_id"]}';
+                    });
+                    log(selectedProject.toString());
+                    Navigator.pushReplacementNamed(context, '/survey');
+                  },
                 ),
               ),
             ],
