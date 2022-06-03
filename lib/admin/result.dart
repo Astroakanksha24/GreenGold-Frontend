@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:green_building/admin/home.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,6 +19,8 @@ class Result extends StatefulWidget {
 class _ResultState extends State<Result> {
   String? token = '', username = '', role = '';
   String project_id = '';
+
+  bool showScreen = false;
   dynamic projectData = [];
   void getUserData() async {
     token = await storage.read(key: 'token');
@@ -36,6 +39,7 @@ class _ResultState extends State<Result> {
         var resp = jsonDecode(response.body);
         log(resp.toString());
         setState(() {
+          showScreen = true;
           projectData = resp;
         });
         return;
@@ -61,27 +65,32 @@ class _ResultState extends State<Result> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            '${projectData["certification_badge"]} certified',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ), //Text
-          Text(
-            'Score ${projectData["score"]}/100',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          ElevatedButton(
-            onPressed: null,
-            child: Text('Restart Quiz',
-                style: TextStyle(color: Colors.white, fontSize: 20)),
-          ) //Text//FlatButton
-        ], //<Widget>[]
-      ), //Column
-    ); //Center
+    return showScreen
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  '${projectData["certification_badge"]} certified',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ), //Text
+                Text(
+                  'Score ${projectData["score"]}/100',
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                ElevatedButton(
+                  onPressed: null,
+                  child: Text('Restart Quiz',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ) //Text//FlatButton
+              ], //<Widget>[]
+            ), //Column
+          )
+        : SpinKitRotatingCircle(
+            color: Colors.white,
+            size: 50.0,
+          ); //Center
   }
 }

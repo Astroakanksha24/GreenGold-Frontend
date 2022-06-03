@@ -219,9 +219,9 @@ class _surveyState extends State<survey> {
     if (response.statusCode == 201) {
       var resp = jsonDecode(response.body);
       _totalScore = resp["score"];
-      setState(() {
-        _questionIndex = _questionIndex + 1;
-      });
+      // setState(() {
+      //   _questionIndex = _questionIndex + 1;
+      // });
       print(_questionIndex);
       if (_questionIndex < _questions.length) {
         print('We have more questions!');
