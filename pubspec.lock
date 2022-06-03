@@ -218,7 +218,18 @@ packages:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "1.8.2"
+=======
+    version: "1.8.0"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.9+1"
+>>>>>>> 362e21e76655a1efbbf131f90a5b84cb6982b19c
   petitparser:
     dependency: transitive
     description:

@@ -4,6 +4,8 @@ import 'package:green_building/admin/adminDashboard.dart';
 import 'package:green_building/admin/survey.dart';
 import 'package:green_building/surveyor/surveyorDashboard.dart';
 import 'package:green_building/utils/login.dart';
+import 'package:green_building/admin/result.dart';
+import 'package:green_building/admin/report.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
         '/CreateSurveyor': (context) => const CreateSurveyor(),
         '/survey': (context) => const survey(),
         '/login': (context) => const LoginScreen(),
+        '/result': (context) => const Result(),
+        '/reports': (context) => const report(),
       },
       debugShowCheckedModeBanner: false,
     );

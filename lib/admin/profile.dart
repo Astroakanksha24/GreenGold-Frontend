@@ -61,103 +61,84 @@ class _profileState extends State<profile> {
     return Container(
       height: double.infinity,
       color: Color(0xFFE0FCFB),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      child: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
+            SizedBox(
+              height: 30.0,
+            ),
+            Text(
+              'Name: ${entityData["first_name"] + " " + entityData["last_name"]}',
+              style: TextStyle(
+                  fontSize: 26,
+                  color: Color(0xFF13552C),
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 20.0,
+            ), //Text
+            Text(
+              'Username: ${entityData["_id"]}',
+              style: TextStyle(
+                  fontSize: 26,
+                  color: Color(0xFF13552C),
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(
               height: 20,
             ),
-            TextNonEdit(label: 'Username', text: entityData["_id"]),
+            Text(
+              'Designation: ${entityData["role"]}',
+              style: TextStyle(
+                  fontSize: 26,
+                  color: Color(0xFF13552C),
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(
-              height: 20,
+              height: 60,
             ),
-            TextNonEdit(
-                label: 'Name',
-                text: entityData["first_name"] + ' ' + entityData["last_name"]),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Color(0xFF13552C)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(
+                              color: Color(0xFF13552C), width: 2.0)))),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/CreateSurveyor');
+              },
+              child: Text('Create Surveyor',
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+            ),
             SizedBox(
-              height: 20,
+              height: 30,
             ),
-            TextNonEdit(label: 'Designation', text: entityData["role"]),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Color(0xFF13552C)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(
-                                        color: Color(0xFF13552C),
-                                        width: 2.0)))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 15),
-                      child: Text('Create Surveyor',
-                          style: TextStyle(color: Colors.white, fontSize: 20)),
-                    ),
-                    onPressed: () async {
-                      Navigator.pushReplacementNamed(
-                          context, '/CreateSurveyor');
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(
-                                        color: Color(0xFFFFFFFF),
-                                        width: 2.0)))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 15),
-                      child: RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text: 'Logout',
-                            style: TextStyle(
-                                color: Color(0xFF3E5A81), fontSize: 20),
-                          )
-                        ]),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await storage.write(key: 'username', value: null);
-                      await storage.write(key: 'token', value: null);
-                      await storage.write(key: 'type', value: null);
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Color(0xFF13552C)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(
+                              color: Color(0xFF13552C), width: 2.0)))),
+              onPressed: () async {
+                await storage.write(key: 'username', value: null);
+                await storage.write(key: 'token', value: null);
+                await storage.write(key: 'type', value: null);
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Text('Logout',
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+            ) //Text//FlatButton
+          ], //<Widget>[]
+        ), //Column
       ),
+      // Center
     );
   }
 }
